@@ -1,0 +1,22 @@
+inherit: [install]
+
+depends:
+    - demo::libecho
+
+checkoutSCM:
+    scm: git
+    url: https://github.com/BobBuildTool/bob-example-embedded-echo-chamber.git
+
+buildTools: [target-toolchain]
+buildVars: [CC, CPPFLAGS, CFLAGS, LDFLAGS]
+buildScript: |
+    CPPFLAGS+=" -I$2/usr/include"
+    LDFLAGS+=" -L$2/usr/lib"
+
+    mkdir -p usr/bin
+    $CC $CPPFLAGS $CFLAGS $LDFLAGS -Wall -Wextra \
+        -o usr/bin/echo-chamber $1/echo-chamber.c \
+        -lecho
+
+packageScript: |
+    installPackageTgt "$1/"

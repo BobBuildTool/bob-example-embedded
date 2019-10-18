@@ -1,0 +1,26 @@
+depends:
+    - libs::libc-tgt
+    - core::busybox
+    - demo::echo-chamber
+
+buildTools: [target-toolchain]
+buildVars: [SYSROOT]
+buildScript: |
+    for i in "${@:2}" ; do
+        cp -a $i/* .
+    done
+
+    ln -sf bin/busybox init
+    mkdir -p dev etc/init.d proc sys
+
+    echo -n $<'initramfs/inittab'> >etc/inittab
+    cp $<<initramfs/rcS>> etc/init.d/rcS
+    chmod 0755 etc/init.d/rcS
+
+packageScript: |
+    mkdir -p boot
+    (
+        cd $1
+        find . | sort | cpio --create --reproducible --format=newc --owner=root:root | gzip
+    ) > boot/initramfs.cpio.gz
+

@@ -1,0 +1,26 @@
+root: True
+
+depends:
+    # define host environment
+    -
+        name: devel::sandbox
+        use: [sandbox]
+        forward: True
+    -
+        name: devel::sandbox-toolchain
+        use: [environment, tools]
+        forward: True
+
+    - demo::vexpress
+    - demo::freertos
+
+buildScript: |
+    mkdir -p linux freertos
+    rsync -a "${BOB_DEP_PATHS[demo::vexpress]}"/ linux/
+    rsync -a  "${BOB_DEP_PATHS[demo::freertos]}"/ freertos/
+
+    cp $<<linux+freertos/run.sh>> run.sh
+    chmod 755 run.sh
+
+packageScript: |
+    cp -a $1/* .

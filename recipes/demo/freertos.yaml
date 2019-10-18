@@ -1,0 +1,40 @@
+depends:
+    # target toolchain
+    -
+        name: devel::cross-toolchain-arm-none-eabi
+        use: [environment, tools]
+        forward: True
+
+    # dependencies
+    - demo::libecho
+
+checkoutSCM:
+   scm: git
+   url: https://github.com/BobBuildTool/FreeRTOS-GCC-ARM926ejs.git
+   branch: bob-example
+
+buildTools: [target-toolchain]
+buildScript: |
+    # Gather all include and library paths.
+    for i in "${@:2}" ; do
+        if [[ -d "$i/usr/include" ]] ; then
+            CPPFLAGS+=" -I$i/usr/include"
+        fi
+        for j in lib usr/lib ; do
+            if [[ -d "$i/$j" ]] ; then
+                LDFLAGS+=" -L$i/$j"
+                if compgen -G "$i/$j/*.so" >/dev/null ; then
+                    LDFLAGS+=" -Wl,-rpath-link=$i/$j"
+                fi
+            fi
+        done
+    done
+
+    [ -z "${CPPFLAGS:+true}" ] || export CPPFLAGS
+    [ -z "${LDFLAGS:+true}" ] || export LDFLAGS
+    
+    make -C $1 OBJDIR=$PWD/
+    cp $1/*qemu.sh .
+
+packageScript: |
+   cp $1/*qemu.sh $1/image.bin .

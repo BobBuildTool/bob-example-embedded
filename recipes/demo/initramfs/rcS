@@ -1,0 +1,11 @@
+mount -t proc proc /proc
+mount -t sysfs sysfs /sys
+
+mdev -s
+stty -F /dev/ttyAMA1 raw -echo
+
+echo "Welcome to Linux!"
+echo ""
+echo "Type 'microcom /dev/ttyAMA1' to start a terminal and talk to the FreeRTOS side. Leave with Ctrl+X."
+echo "Start 'echo-chamber' to invoke the same code from a Linux executable."
+echo ""

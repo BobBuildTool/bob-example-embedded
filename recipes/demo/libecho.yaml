@@ -1,0 +1,18 @@
+inherit: [install]
+
+checkoutSCM:
+    scm: git
+    url: https://github.com/BobBuildTool/bob-example-embedded-libecho.git
+
+buildTools: [target-toolchain]
+buildVars: [AR, CC, CPPFLAGS, CFLAGS]
+buildScript: |
+    mkdir -p build install/usr/{lib,include}
+    #make -C $1 O=$PWD/ DESTDIR="$PWD/../install"
+    $CC -c $CPPFLAGS $CFLAGS -Wall -Wextra -o build/echo.o $1/echo.c
+
+    $AR rscDv install/usr/lib/libecho.a build/echo.o
+    cp $1/echo.h install/usr/include
+
+packageScript: |
+    installPackageDev "$1/install/"
