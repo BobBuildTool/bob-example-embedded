@@ -17,6 +17,7 @@ buildScript: |
     cp $<<initramfs/rcS>> etc/init.d/rcS
     chmod 0755 etc/init.d/rcS
 
+packageTools: [cpio]
 packageScript: |
     mkdir -p boot
     (
