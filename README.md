@@ -4,6 +4,8 @@ This repository uses the [basement](https://github.com/BobBuildTool/basement)
 recipes to build a small Linux system and a FreeRTOS based system in one
 project. Both systems share a common "echo" library that replies to your input.
 
+[![Build Status](https://ci.bobbuildtool.dev/jenkins/buildStatus/icon?job=example-embedded-demo__linux_freertos)](https://ci.bobbuildtool.dev/jenkins/view/Embedded%20example/job/example-embedded-demo__linux_freertos/)
+
 # Prerequisites
 
 * A x86_64 system with the regular development tools installed (gcc, make,
