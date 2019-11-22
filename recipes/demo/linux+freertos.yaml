@@ -1,20 +1,6 @@
-root: True
+inherit: [ "basement::rootrecipe" ]
 
 depends:
-    # define host environment
-    -
-        name: devel::sandbox
-        use: [sandbox]
-        forward: True
-    -
-        name: devel::sandbox-toolchain
-        use: [environment, tools]
-        forward: True
-    -
-        name: utils::cpio
-        use: [tools]
-        forward: True
-
     - demo::vexpress
     - demo::freertos
 
