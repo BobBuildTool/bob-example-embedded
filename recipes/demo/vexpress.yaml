@@ -3,6 +3,12 @@ environment:
     LINUX_DTB: "vexpress-v2p-ca9"
 
 depends:
+    # tools
+    -
+        name: utils::cpio
+        use: [tools]
+        forward: True
+
     # target toolchain
     -
         name: devel::cross-toolchain-arm-linux-gnueabihf

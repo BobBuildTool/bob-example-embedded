@@ -1,3 +1,5 @@
+inherit: [make]
+
 depends:
     # target toolchain
     -
@@ -32,8 +34,8 @@ buildScript: |
 
     [ -z "${CPPFLAGS:+true}" ] || export CPPFLAGS
     [ -z "${LDFLAGS:+true}" ] || export LDFLAGS
-    
-    make -C $1 OBJDIR=$PWD/
+
+    makeParallel -C $1 OBJDIR=$PWD/
     cp $1/*qemu.sh .
 
 packageScript: |
