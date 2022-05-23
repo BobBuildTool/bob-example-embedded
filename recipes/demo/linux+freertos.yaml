@@ -3,13 +3,40 @@ inherit: [ "basement::rootrecipe" ]
 depends:
     - demo::vexpress
     - demo::freertos
+    - name: kernel::linux-image
+      use: [environment]
 
+buildVars: [LINUX_VERSION]
 buildScript: |
     mkdir -p linux freertos
     rsync -a "${BOB_DEP_PATHS[demo::vexpress]}"/ linux/
     rsync -a  "${BOB_DEP_PATHS[demo::freertos]}"/ freertos/
 
-    cp $<<linux+freertos/run.sh>> run.sh
+    cat >run.sh <<EOF
+    #!/bin/bash
+
+    D=\${0%/*}
+    T=\$(mktemp -d)
+    trap 'rm -rf \$T' EXIT
+
+    mkfifo "\$T/freertos.in"
+    mkfifo "\$T/freertos.out"
+    ln -s  "\$T/freertos.in" "\$T/linux.out"
+    ln -s  "\$T/freertos.out" "\$T/linux.in"
+
+    qemu-system-arm -M versatilepb -nographic -m 128 \\
+        -kernel "\$D/freertos/image.bin" \\
+        -serial "pipe:\$T/freertos" &
+    FREERTOS=\$!
+
+    qemu-system-arm -M vexpress-a9 \\
+        -kernel "\$D/linux/boot/vmlinux-${LINUX_VERSION}" \\
+        -initrd "\$D/linux/boot/initramfs.cpio.gz" \\
+        -append "console=tty1" -dtb "\$D/linux/boot/dtbs/${LINUX_VERSION}/vexpress-v2p-ca9.dtb" \\
+        -serial vc -serial "pipe:\$T/linux"
+
+    kill \$FREERTOS
+    EOF
     chmod 755 run.sh
 
 packageScript: |
