@@ -3,6 +3,12 @@ environment:
     LINUX_DTB: "vexpress-v2p-ca9"
 
 depends:
+    # tools
+    -
+        name: utils::cpio
+        use: [tools]
+        forward: True
+
     # target toolchain
     -
         name: devel::cross-toolchain-arm-linux-gnueabihf
@@ -10,27 +16,38 @@ depends:
         forward: True
 
     - demo::initramfs
-    - kernel::linux-image
+    - name: kernel::linux-image
+      use: [environment, result]
 
+buildVars: [LINUX_VERSION]
 buildScript: |
     for i in "${@:2}" ; do
         cp -au $i/* .
     done
 
-    cat >run.sh <<'EOF'
+    cat >run.sh <<EOF
     #!/bin/sh
-    D=${0%/*}
-    qemu-system-arm -M vexpress-a9 -kernel $D/boot/zImage -initrd $D/boot/initramfs.cpio.gz -append "console=tty1" -dtb $D/boot/vexpress-v2p-ca9.dtb
+    D=\${0%/*}
+    qemu-system-arm -M vexpress-a9 \\
+        -kernel \$D/boot/vmlinux-${LINUX_VERSION} \\
+        -initrd \$D/boot/initramfs.cpio.gz \\
+        -append "console=tty1" \\
+        -dtb \$D/boot/dtbs/${LINUX_VERSION}/vexpress-v2p-ca9.dtb
     EOF
 
-    cat >run-console.sh <<'EOF'
+    cat >run-console.sh <<EOF
     #!/bin/sh
-    D=${0%/*}
-    qemu-system-arm -M vexpress-a9 -kernel $D/boot/zImage -initrd $D/boot/initramfs.cpio.gz -append "console=tty1" -dtb $D/boot/vexpress-v2p-ca9.dtb -append "console=ttyAMA0" -nographic
+    D=\${0%/*}
+    qemu-system-arm -M vexpress-a9 \\
+        -kernel \$D/boot/vmlinux-${LINUX_VERSION} \\
+        -initrd \$D/boot/initramfs.cpio.gz \\
+        -append "console=tty1" \\
+        -dtb \$D/boot/dtbs/${LINUX_VERSION}/vexpress-v2p-ca9.dtb \\
+        -append "console=ttyAMA0" \\
+        -nographic
     EOF
 
     chmod +x run.sh run-console.sh
 
 packageScript: |
     cp -au $1/* .
-

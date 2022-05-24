@@ -19,8 +19,7 @@ example](https://github.com/BobBuildTool/bob-example-containers).
 
 * A `x86_64` system with the regular development tools installed (GCC, make,
   Perl, ...)
-* Bleeding edge [Bob Build Tool](https://github.com/BobBuildTool/bob) (see
-  [below](#why-bleeding-edge))
+* [Bob Build Tool](https://github.com/BobBuildTool/bob)
 * Patience :coffee:
 
 To actually run the built example you'll also need QEMU.
@@ -48,10 +47,3 @@ in the Linux system.
 Contributions are welcome in form of feedback, bug reports and code. If you want
 to contribute in the form of code but are unsure about how to do things exactly,
 feel free to open up a pull request and ask for help.
-
-# Why bleeding edge
-
-The example uses Bob recipe layers that aren't currently available within a Bob
-release because one goal of it is testing the new feature intensively. Bob's
-next release will likely include layers so you won't have to install the
-bleeding edge version anymore.
