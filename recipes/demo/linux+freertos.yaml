@@ -32,8 +32,11 @@ buildScript: |
     qemu-system-arm -M vexpress-a9 \\
         -kernel "\$D/linux/boot/vmlinux-${LINUX_VERSION}" \\
         -initrd "\$D/linux/boot/initramfs.cpio.gz" \\
-        -append "console=tty1" -dtb "\$D/linux/boot/dtbs/${LINUX_VERSION}/vexpress-v2p-ca9.dtb" \\
-        -serial vc -serial "pipe:\$T/linux"
+        -append "console=tty1" \\
+        -dtb "\$D/linux/boot/dtbs/${LINUX_VERSION}/vexpress-v2p-ca9.dtb" \\
+        -serial mon:stdio -serial "pipe:\$T/linux" \\
+        -append "console=ttyAMA0" \
+        -nographic
 
     kill \$FREERTOS
     EOF
