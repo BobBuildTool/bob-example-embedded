@@ -28,10 +28,10 @@ To actually run the built example you'll also need QEMU.
 
 Clone the recipes and build them with Bob:
 
-    $ git clone https://github.com/BobBuildTool/bob-example-embedded.git \
-	    --recurse-submodules
+    $ git clone https://github.com/BobBuildTool/bob-example-embedded.git
     $ cd bob-example-embedded
-    $ bob build demo::linux+freertos
+    $ bob layers update
+    $ bob build demo::linux+freertos -j
 
 # How to use
 
