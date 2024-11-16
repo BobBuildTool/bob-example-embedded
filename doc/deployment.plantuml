@@ -1,0 +1,14 @@
+@startuml
+node "Linux (vexpress-a9)" as linux {
+artifact echo-chamber {
+component libecho as l1
+}
+artifact microcom
+}
+node "FreeRTOS (versatilepb)" as freertos {
+component libecho as l2 {
+}
+}
+
+microcom -- l2 : ttyAMA1
+@enduml
