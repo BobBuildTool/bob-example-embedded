@@ -1,7 +1,5 @@
 # Bob Embedded Example
 
-[![Build Status](https://ci.bobbuildtool.dev/jenkins/buildStatus/icon?job=example-embedded-demo__linux_freertos)](https://ci.bobbuildtool.dev/jenkins/view/Embedded%20example/job/example-embedded-demo__linux_freertos/)
-
 This demo builds both a small Linux image and a FreeRTOS based image in one
 project that share a common "echo" library that replies to your input. It's
 meant as an example on how to use Bob to build multi-image code-sharing projects
