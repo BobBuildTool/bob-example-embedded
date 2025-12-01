@@ -10,7 +10,7 @@ buildVars: [LINUX_VERSION]
 buildScript: |
     mkdir -p linux freertos
     rsync -a "${BOB_DEP_PATHS[demo::vexpress]}"/ linux/
-    rsync -a  "${BOB_DEP_PATHS[demo::freertos]}"/ freertos/
+    rsync -a "${BOB_DEP_PATHS[demo::freertos]}"/ freertos/
 
     cat >run.sh <<EOF
     #!/bin/bash
@@ -30,10 +30,10 @@ buildScript: |
     FREERTOS=\$!
 
     qemu-system-arm -M vexpress-a9 \\
-        -kernel "\$D/linux/boot/vmlinux-${LINUX_VERSION}" \\
+        -kernel "\$D/linux/boot/zImage" \\
         -initrd "\$D/linux/boot/initramfs.cpio.gz" \\
         -append "console=tty1" \\
-        -dtb "\$D/linux/boot/dtbs/${LINUX_VERSION}/vexpress-v2p-ca9.dtb" \\
+        -dtb "\$D/linux/boot/vexpress-v2p-ca9.dtb" \\
         -serial mon:stdio -serial "pipe:\$T/linux" \\
         -append "console=ttyAMA0" \
         -nographic

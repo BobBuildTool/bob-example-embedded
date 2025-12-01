@@ -1,6 +1,5 @@
 environment:
-    LINUX_CONFIG: "vexpress"
-    LINUX_DTB: "vexpress-v2p-ca9"
+    LINUX_CONFIG: "vexpress_defconfig"
 
 depends:
     # tools
@@ -16,33 +15,32 @@ depends:
         forward: True
 
     - demo::initramfs
-    - name: kernel::linux-image
-      use: [environment, result]
+    - kernel::linux-image
+    - kernel::linux-dtbs
 
-buildVars: [LINUX_VERSION]
 buildScript: |
-    for i in "${@:2}" ; do
-        cp -au $i/* .
-    done
+    cp -au "${BOB_DEP_PATHS[demo::initramfs]}"/* .
+    cp -au "${BOB_DEP_PATHS[kernel::linux-image]}"/zImage boot/
+    cp -au "${BOB_DEP_PATHS[kernel::linux-dtbs]}"/vexpress-v2p-ca9.dtb boot/
 
     cat >run.sh <<EOF
     #!/bin/sh
     D=\${0%/*}
     qemu-system-arm -M vexpress-a9 \\
-        -kernel \$D/boot/vmlinux-${LINUX_VERSION} \\
+        -kernel \$D/boot/zImage \\
         -initrd \$D/boot/initramfs.cpio.gz \\
         -append "console=tty1" \\
-        -dtb \$D/boot/dtbs/${LINUX_VERSION}/vexpress-v2p-ca9.dtb
+        -dtb \$D/boot/vexpress-v2p-ca9.dtb
     EOF
 
     cat >run-console.sh <<EOF
     #!/bin/sh
     D=\${0%/*}
     qemu-system-arm -M vexpress-a9 \\
-        -kernel \$D/boot/vmlinux-${LINUX_VERSION} \\
+        -kernel \$D/boot/zImage \\
         -initrd \$D/boot/initramfs.cpio.gz \\
         -append "console=tty1" \\
-        -dtb \$D/boot/dtbs/${LINUX_VERSION}/vexpress-v2p-ca9.dtb \\
+        -dtb \$D/boot/vexpress-v2p-ca9.dtb \\
         -append "console=ttyAMA0" \\
         -nographic
     EOF
